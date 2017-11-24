@@ -22,6 +22,7 @@ item_description: Full description of the item.
 
 import numpy as np
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -52,7 +53,6 @@ display_all(train.describe(include='all').transpose())
 
 # Visualizing Dataset (Trying to find Top20 selling categories & their proportion in entire training data provided. Then we shall shift focus on Top20 selling Brands.)
 
-import matplotlib
 f,ax = plt.subplots(1, 1, figsize=(15,20))
 hist = train.groupby(['category_name'], as_index=False).count().sort_values(by='id', ascending=False)[0:25]
 sns.barplot(y=hist['category_name'], x=hist['id'], orient='h')
