@@ -1,1 +1,78 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 24 07:36:58 2017 (IST)
+Data Source: https://www.kaggle.com/c/mercari-price-suggestion-challenge/data
+Purpose: Predict product selling price.
+
+Data Fields: The files (train.tsv & test.tsv) consist of a list of product listings. These files are tab-delimited.
+
+train_id or test_id: The id of the listing
+name: the title of the listing.
+item_condition_id: Condition of the items provided by the seller
+category_name: Category of the listing
+brand_name
+price - Price (USD) that the item was sold for. This is the target variable to predict.
+shipping: 1 if shipping fee is paid by seller and 0 by buyer
+item_description: Full description of the item.
+
+@author: Alok Kumar
+"""
+
+# Importing Libraries:
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Reading Data Files:
+
+train = pd.read_csv('train.tsv/train.tsv', sep = '\t')
+test = pd.read_csv('test.tsv/test.tsv', sep = '\t')
+
+# Analyzing Training Dataset:
+
+train.head()
+train.dtypes
+train = train.rename(columns = {'train_id':'id'})
+
+test.head()
+test = test.rename(columns = {'test_id':'id'})
+
+print("There are",len(train.brand_name.unique()),"brand names")
+print("There are",len(train.category_name.unique()),"categories")
+train.item_condition_id.unique()
+
+def display_all(df):
+    with pd.option_context("display.max_rows", 1000):
+        with pd.option_context("display.max_columns", 1000):
+            display(df)
+
+display_all(train.describe(include='all').transpose())
+
+# Visualizing Dataset (Trying to find Top20 selling categories & their proportion in entire training data provided. Then we shall shift focus on Top20 selling Brands.)
+
+import matplotlib
+f,ax = plt.subplots(1, 1, figsize=(15,20))
+hist = train.groupby(['category_name'], as_index=False).count().sort_values(by='id', ascending=False)[0:25]
+sns.barplot(y=hist['category_name'], x=hist['id'], orient='h')
+matplotlib.rcParams.update({'font.size': 22})
+plt.show()
+
+hist['id'].values[0]/np.sum(hist['id'].values[1:])
+
+labels = hist['category_name'].values[0], hist['category_name'].values[1], hist['category_name'].values[2], hist['category_name'].values[3], 'Others'
+sizes = [hist['id'].values[0], hist['id'].values[1], hist['id'].values[2], hist['id'].values[3],np.sum(hist['id'].values[4:])]
+colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue','brown']
+explode = (0.1, 0, 0, 0, 0)  # Explode 1st slice
+plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+plt.axis('equal')
+plt.show()
+
+f,ax = plt.subplots(1, 1, figsize=(15,20))
+hist = train.groupby(['brand_name'], as_index=False).count().sort_values(by='id', ascending=False)[0:25]
+sns.barplot(y=hist['brand_name'],x=hist['id'], orient='h')
+matplotlib.rcParams.update({'font.size': 22})
+plt.show()
+
 
