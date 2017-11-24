@@ -163,4 +163,4 @@ pred = pipeline.predict(df_test_wid)
 submission = pd.DataFrame(data= test['id'], index=None)
 submission['price'] = pred
 submission.columns = ['test_id','price']
-submission.to_csv('mps_submission1', index=False)
+submission.to_csv('mps_submission1.csv', index=False)
